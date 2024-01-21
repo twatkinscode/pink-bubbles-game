@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taylin's Prompt Engineering Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #ffd1dc; /* Light Pink Background Color */
+        }
+
+        #gameTitle {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        #gameArea {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            cursor: pointer;
+        }
+
+        .bubble {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #ff66b2; /* Dark Pink Bubble Color */
+            border-radius: 50%;
+            animation: float 4s linear infinite;
+        }
+
+        .tryAgain {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: red;
+            font-size: 30px;
+            display: none;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2 id="gameTitle">Taylin's Prompt Engineering Game - Score: 0</h2>
+    <div id="gameArea"></div>
+    <div class="tryAgain" id="tryAgain">Try Again</div>
+
+    <script>
+        const gameArea = document.getElementById('gameArea');
+        const gameTitle = document.getElementById('gameTitle');
+        const tryAgainMessage = document.getElementById('tryAgain');
+        let score = 0;
+
+        // Add bubbles to the game area
+        for (let i = 0; i < 10; i++) {
+            createBubble();
+        }
+
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+
+            // Set random position for the bubble
+            const maxX = window.innerWidth - 50;
+            const randomX = Math.floor(Math.random() * maxX);
+
+            bubble.style.left = `${randomX}px`;
+
+            gameArea.appendChild(bubble);
+        }
+
+        // Add event listener for click event
+        gameArea.addEventListener('click', (event) => {
+            // Remove the clicked bubble
+            const clickedElement = document.elementFromPoint(event.clientX, event.clientY);
+            if (clickedElement.classList.contains('bubble')) {
+                clickedElement.remove();
+
+                // Create a new bubble to replace the removed one
+                createBubble();
+
+                // Update the score
+                score++;
+                updateScore();
+            } else {
+                // Show "Try Again" message and deduct a point
+                showTryAgain();
+                score = Math.max(0, score - 1);
+                updateScore();
+
+                // Hide the message after 1 second
+                setTimeout(() => {
+                    hideTryAgain();
+                }, 1000);
+            }
+        });
+
+        function updateScore() {
+            gameTitle.innerHTML = `Taylin's Prompt Engineering Game - Score: ${score}`;
+        }
+
+        function showTryAgain() {
+            tryAgainMessage.style.display = 'block';
+        }
+
+        function hideTryAgain() {
+            tryAgainMessage.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
